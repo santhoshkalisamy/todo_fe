@@ -29,7 +29,7 @@ export default function Home() {
     }
 
     function fetchTodos() {
-        fetch('http://localhost:3100/api/todo')
+        fetch('https://todo-be-zmei.onrender.com/api/todo')
             .then(response => response.json())
             .then(json => {
                 const todos = json as Todo[];

@@ -39,7 +39,7 @@ const AddTodoButton = ({onAddTodo}: AddTodoButtonProps) => {
             return;
         }
         console.log({title, description, dueDate, done});
-        fetch('http://localhost:3100/api/todo', {
+        fetch('https://todo-be-zmei.onrender.com/api/todo', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

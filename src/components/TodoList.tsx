@@ -18,7 +18,7 @@ type TodoListProps = {
 const TodoList = (todoProps: TodoListProps) => {
 
     function handleDelete(_id: number) {
-        fetch(`http://localhost:3100/api/todo/${_id}`, {
+        fetch(`https://todo-be-zmei.onrender.com/api/todo/${_id}`, {
             method: 'DELETE'
         }).then(response => {
             if (response.ok) {
@@ -30,7 +30,7 @@ const TodoList = (todoProps: TodoListProps) => {
     }
 
     function handleMarkAsDone(_id: number) {
-        fetch(`http://localhost:3100/api/todo/${_id}`, {
+        fetch(`https://todo-be-zmei.onrender.com/api/todo/${_id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
