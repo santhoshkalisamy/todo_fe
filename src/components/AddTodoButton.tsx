@@ -15,6 +15,8 @@ import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label"
 import {Checkbox} from "@/components/ui/checkbox";
 import {MdAdd} from "react-icons/md";
+import {Textarea} from "@/components/ui/textarea";
+import {Loader2} from "lucide-react";
 
 
 interface AddTodoButtonProps {
@@ -23,9 +25,17 @@ interface AddTodoButtonProps {
 
 const AddTodoButton = ({onAddTodo}: AddTodoButtonProps) => {
     const [isOpen, setIsOpen] = React.useState(false);
+    const [description, setDescription] = React.useState('');
+    const [title, setTitle] = React.useState('');
+    const [dueDate, setDueDate] = React.useState('');
+    const [generationInProgress, setGenerationInProgress] = React.useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [showAIButton, setShowAIButton] = React.useState(false);
+    const [isSaving, setIsSaving] = React.useState(false);
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsSaving(true);
         const form = e.currentTarget;
         const formData = new FormData(form);
         const title = formData.get('title');
@@ -39,7 +49,7 @@ const AddTodoButton = ({onAddTodo}: AddTodoButtonProps) => {
             return;
         }
         console.log({title, description, dueDate, done});
-        fetch('https://todo-be-zmei.onrender.com/api/todo', {
+        fetch('http://localhost:3100/api/todo', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -50,10 +60,39 @@ const AddTodoButton = ({onAddTodo}: AddTodoButtonProps) => {
                 //form.reset();
                 setIsOpen(false);
                 onAddTodo();
+
             }
         }).catch(error => {
             console.error('Error adding item', error);
+        }).finally(() => {
+            setIsSaving(false);
         });
+    }
+
+    function generateDescription() {
+        setGenerationInProgress(true);
+        console.log('Generating description');
+        console.log('Calling AI');
+        console.log(title);
+        console.log(dueDate);
+        fetch('http://localhost:3100/api/todo/generate-description',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({title, dueDate})
+        })
+            .then(response => response.json())
+            .then(json => {
+                const description = json as string;
+                setDescription(description);
+                console.log(description);
+                setGenerationInProgress(false);
+            }
+        ).catch(error => {
+            console.error('Error generating description', error);
+            setGenerationInProgress(false);
+        })
     }
 
     return (
@@ -76,19 +115,30 @@ const AddTodoButton = ({onAddTodo}: AddTodoButtonProps) => {
                                 <Label htmlFor="title" className="text-right">
                                     Title
                                 </Label>
-                                <Input id="title" name="title" className="col-span-3"/>
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="description" className="text-right">
-                                    Description
-                                </Label>
-                                <Input id="description" name="description" className="col-span-3"/>
+                                <Input id="title" name="title" className="col-span-3" value={title} onChange={(e) => setTitle(e.currentTarget.value)}/>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="dueDate" className="text-right">
                                     Due Date
                                 </Label>
-                                <Input id="dueDate" name="dueDate" type="datetime-local" className="col-span-3"/>
+                                <Input onChange={(e) => setDueDate(e.currentTarget.value)} id="dueDate" name="dueDate" type="datetime-local" className="col-span-3" value={dueDate}/>
+                            </div>
+                            {showAIButton && <div className="flex flex-row justify-end">
+                                <Button type="button" variant="outline"
+                                        className="hover:text-white bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90% text-gray-100 hover:font-extrabold"
+                                        disabled={generationInProgress}
+                                        onClick={generateDescription}
+                                >
+                                    {generationInProgress && <Loader2 className="animate-spin" /> }
+                                    Generate Description with AI</Button>
+                            </div> }
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <div className="flex flex-row justify-between">
+                                <Label htmlFor="description" className="text-right">
+                                    Description
+                                </Label>
+                                </div>
+                                <Textarea onChange={(e) => setDescription(e.currentTarget.value)} value={description} id="description" name="description" className="col-span-3"/>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="isDone" className="text-right">
@@ -98,7 +148,9 @@ const AddTodoButton = ({onAddTodo}: AddTodoButtonProps) => {
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button type="submit">Save changes</Button>
+                            <Button type="submit">
+                                <Loader2 className={`animate-spin ${isSaving ? 'block' : 'hidden'}`} />
+                                Save changes</Button>
                         </DialogFooter>
                     </form>
                 </DialogContent>

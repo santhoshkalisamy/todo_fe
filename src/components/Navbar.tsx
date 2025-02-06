@@ -1,5 +1,7 @@
 import React from 'react'
 import Logo from "@/components/Logo";
+import TodoSearchBox from "@/components/TodoSearchBox";
+import {ModeToggle} from "@/components/ModeToggle";
 
 const Navbar = () => {
     return (
@@ -7,8 +9,8 @@ const Navbar = () => {
              role="navigation">
             <Logo/>
             <h2 className="text-2xl font-bold pb-2 text-emerald-700">My Awesome Todo Application</h2>
-            {/*<TodoSearchBox/>*/}
-            {/*<ModeToggle />*/}
+            <TodoSearchBox/>
+            <ModeToggle />
         </nav>
     )
 }

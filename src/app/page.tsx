@@ -29,23 +29,22 @@ export default function Home() {
     }
 
     function fetchTodos() {
-        fetch('https://todo-be-zmei.onrender.com/api/todo')
+        fetch('http://localhost:3100/api/todo')
             .then(response => response.json())
             .then(json => {
                 const todos = json as Todo[];
-                console.log(todos);
+                /*console.log(todos);
                 const sorted = todos.sort((a, b) => {
                     return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
                 });
-                console.log(sorted);
-                setTodos(sorted)
+                console.log(sorted);*/
+                setTodos(todos)
             })
     }
 
   return (
-    <div className="w-full h-full mb-20 overflow-scroll absolute bg-gradient-to-b from-emerald-200 to-blue-300">
-      <header className="flex justify-between items-center text-black py-6 px-8 md:px-32
-       bg-white drop-shadow">
+            <div className="w-full h-full mb-20 overflow-scroll absolute bg-gradient-to-b from-emerald-200 to-blue-300 dark:from-gray-800 dark:to-gray-900">
+                <header className="flex justify-between items-center text-black py-6 px-8 md:px-32 bg-white dark:bg-gray-800 dark:text-white drop-shadow">
           <Navbar />
       </header>
         <section className="container mx-auto py-8 relative">

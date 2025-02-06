@@ -2,6 +2,8 @@
 
 import React from 'react'
 import {TodoCard} from "@/components/TodoCard";
+import {ToastContainer, toast} from 'react-toastify';
+
 
 export type Todo = {
     title: string,
@@ -17,11 +19,27 @@ type TodoListProps = {
 
 const TodoList = (todoProps: TodoListProps) => {
 
+    const notifyUpdate = () => toast.info('Marked as complete!', {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+    });
+
+    const notifyDelete = () => toast.error('Deleted Successfully!', {
+        position: "bottom-right",
+    });
+
     function handleDelete(_id: number) {
-        fetch(`https://todo-be-zmei.onrender.com/api/todo/${_id}`, {
+        fetch(`http://localhost:3100/api/todo/${_id}`, {
             method: 'DELETE'
         }).then(response => {
             if (response.ok) {
+                notifyDelete();
                 todoProps.fetchTodos();
             }
         }).catch(error => {
@@ -30,7 +48,7 @@ const TodoList = (todoProps: TodoListProps) => {
     }
 
     function handleMarkAsDone(_id: number) {
-        fetch(`https://todo-be-zmei.onrender.com/api/todo/${_id}`, {
+        fetch(`http://localhost:3100/api/todo/${_id}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
@@ -38,6 +56,7 @@ const TodoList = (todoProps: TodoListProps) => {
             body: JSON.stringify({done: true})
         }).then(response => {
             if (response.ok) {
+                notifyUpdate();
                 todoProps.fetchTodos();
             }
         }).catch(error => {
@@ -55,6 +74,7 @@ const TodoList = (todoProps: TodoListProps) => {
                     </li>
                 ))}
             </ul>
+            <ToastContainer />
         </div>
     )
 }
