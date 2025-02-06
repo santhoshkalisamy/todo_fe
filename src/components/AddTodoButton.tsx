@@ -30,7 +30,7 @@ const AddTodoButton = ({onAddTodo}: AddTodoButtonProps) => {
     const [dueDate, setDueDate] = React.useState('');
     const [generationInProgress, setGenerationInProgress] = React.useState(false);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [showAIButton, setShowAIButton] = React.useState(false);
+    const [showAIButton, setShowAIButton] = React.useState(true);
     const [isSaving, setIsSaving] = React.useState(false);
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
